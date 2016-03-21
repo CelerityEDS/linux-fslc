@@ -52,10 +52,6 @@
 	status = "okay";
 };
 
-&gpu {
-	pu-supply = <&pu_dummy>; /* ldo-bypass:use pu_dummy if VDDSOC share with VDDPU */
-};
-
 &i2c1 {
 	clock-frequency = <100000>;
 	pinctrl-names = "default";
@@ -63,17 +59,17 @@
 	status = "okay";
 
 	temp1: tmp102@48 {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x48>;
 	};
 
 	temp2: tmp102@4A {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x4A>;
 	};
 
 	temp3: tmp102@49 {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x49>;
 	};
 
@@ -115,17 +111,17 @@
 	status = "okay";
 
 	temp4: tmp102@48 {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x48>;
 	};
 
 	temp5: tmp102@4A {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x4A>;
 	};
 
 	temp6: tmp102@49 {
-		compatible = ti,tmp102;
+		compatible = "ti,tmp102";
 		reg = <0x49>;
 	};
 };
