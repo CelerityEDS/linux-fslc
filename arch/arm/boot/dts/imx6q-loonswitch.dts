@@ -1,0 +1,35 @@
+/*
+ * Copyright 2016 Google, Inc.
+ *
+ * Author: Warranyu Walton <wwalton@celerityeds.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ */
+/dts-v1/;
+#include "imx6q.dtsi"
+#include "imx6qdl-loonswitch.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "Google Loon Switch Board";
+	compatible = "fsl,imx6q";
+
+	leds {
+		compatible = "gpio-leds";
+		cpu-led1 {
+			label = "CPU_LED1";  /* DISP0_DAT5__GPIO4_IO26 */
+			gpios = <&gpio4 26 0>;
+		};
+		cpu-led2 {
+			label = "CPU_LED2";  /* DISP0_DAT6__GPIO4_IO27 */
+			gpios = <&gpio4 27 0>;
+		};
+		cpu-led3 {
+			label = "CPU_LED3";  /* DISP0_DAT7__GPIO4_IO28 */
+			gpios = <&gpio4 28 0>;
+		};
+	};
+};
