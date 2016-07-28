@@ -1,7 +1,7 @@
 /*
- * Copyright 2016 Google, Inc.
+ * Copyright 2013 Freescale Semiconductor, Inc.
  *
- * Author: Warranyu Walton <wwalton@celerityeds.com>
+ * Author: Fabio Estevam <fabio.estevam@freescale.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -18,14 +18,102 @@
 		reg = <0x10000000 0x40000000>;
 	};
 
+	aliases {
+		mmc1 = &usdhc2;
+		mmc2 = &usdhc3;
+	};
+
+	regulators {
+		compatible = "simple-bus";
+
+		reg_usb_otg_vbus: regulator@0 {
+			compatible = "regulator-fixed";
+			regulator-name = "usb_otg_vbus";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&gpio4 15 0>;
+			enable-active-high;
+		};
+	};
+
+	clocks {
+		clk24m: clk24m {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <24000000>;
+		};
+	};
 };
 
-&pcie {
+&i2c1 {
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c1>;
 	status = "okay";
+
+	temp1: tmp102@48 {
+		compatible = "ti,tmp102";
+		reg = <0x48>;
+	};
+
+	temp2: tmp102@4A {
+		compatible = "ti,tmp102";
+		reg = <0x4A>;
+	};
+
+	temp3: tmp102@49 {
+		compatible = "ti,tmp102";
+		reg = <0x49>;
+	};
+
+	fram: eeprom@50 {
+		compatible = "atmel,24c08";
+		reg = <0x50>;
+	};
+
+	ina226-imx@47 {
+		compatible = "ti,ina226";
+		reg = <0x47>;
+		shunt-resistor = <7000>;
+	};
+
+	ina226-bcm@4D {
+		compatible = "ti,ina226";
+		reg = <0x4D>;
+		shunt-resistor = <12000>;
+	};
+
 };
 
-&sata {
+&i2c2 {
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c2>;
 	status = "okay";
+
+};
+
+&i2c3 {
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c3>;
+	status = "okay";
+
+	temp4: tmp102@48 {
+		compatible = "ti,tmp102";
+		reg = <0x48>;
+	};
+
+	temp5: tmp102@4A {
+		compatible = "ti,tmp102";
+		reg = <0x4A>;
+	};
+
+	temp6: tmp102@49 {
+		compatible = "ti,tmp102";
+		reg = <0x49>;
+	};
+
 };
 
 &uart1 {
@@ -52,94 +140,49 @@
 	status = "okay";
 };
 
-&i2c1 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c1>;
-	status = "okay";
-
-	temp1: tmp102@48 {
-		compatible = "ti,tmp102";
-		reg = <0x48>;
-	};
-
-	temp2: tmp102@4A {
-		compatible = "ti,tmp102";
-		reg = <0x4A>;
-	};
-
-	temp3: tmp102@49 {
-		compatible = "ti,tmp102";
-		reg = <0x49>;
-	};
-
-	fram: eeprom@50 {
-	compatible = "atmel,at24";
-	reg = <0x50>;
-	pagesize = <256>;
-	};
-
-	ina226-imx@47 {
-		compatible = "ti,ina226";
-		reg = <0x47>;
-		shunt-resistor = <7000>;
-	};
-
-	ina226-bcm@4D {
-	compatible = "ti,ina226";
-	reg = <0x4D>;
-	shunt-resistor = <12000>;
-	};
-
-	/* TODO: LM5056PMHZX */
-
-};
-
-&i2c2 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c2>;
-	status = "okay";
-
-	/* External Connector */
-};
-
-&i2c3 {
-	clock-frequency = <100000>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_i2c3>;
-	status = "okay";
-
-	temp4: tmp102@48 {
-		compatible = "ti,tmp102";
-		reg = <0x48>;
-	};
-
-	temp5: tmp102@4A {
-		compatible = "ti,tmp102";
-		reg = <0x4A>;
-	};
-
-	temp6: tmp102@49 {
-		compatible = "ti,tmp102";
-		reg = <0x49>;
-	};
-};
-
 &usbh1 {
+	status = "okay";
+};
+
+&usbotg {
+	vbus-supply = <&reg_usb_otg_vbus>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg>;
+	disable-over-current;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
 	status = "okay";
 };
 
 &usdhc2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc2>;
+	cd-gpios = <&gpio2 2 0>;
 	status = "okay";
 };
 
 &usdhc3 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc3>;
+	bus-width = <8>;
 	status = "okay";
+};
+
+&fec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_enet>;
+	phy-mode = "rgmii";
+	status = "okay";
+
+	local-mac-address = [00 0A 35 00 01 24];
+
+	#address-cells = <0>;
+	#size-cells = <1>;
+	phy_int {
+		reg = <0x6>;
+		interrupts-extended = <&gpio1 28 IRQ_TYPE_LEVEL_LOW>;
+	};
 };
 
 &ecspi1 {
@@ -184,22 +227,11 @@
 	};	
 };
 
-&fec {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_enet>;
-	phy-mode = "rgmii";
-	status = "okay";
-};
-
 &flexcan1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_flexcan1>;
 	status = "okay";
 };
-
-
-
-
 
 &iomuxc {
 
@@ -238,7 +270,6 @@
 			>;
 		};
 	};
-
 
 	i2c1 {
 		pinctrl_i2c1: i2c1grp {
@@ -297,6 +328,15 @@
 		};
 	};
 
+	usbotg {
+		pinctrl_usbotg: usbotggrp {
+			fsl,pins = <
+				MX6QDL_PAD_GPIO_1__USB_OTG_ID		0x17059
+				MX6QDL_PAD_KEY_ROW4__GPIO4_IO15		0x80000000
+			>;
+		};
+	};
+
 	ecspi1 {
 
 		pinctrl_ecspi1_cs: ecspi1_cs_grp {
@@ -335,21 +375,23 @@
 
 		pinctrl_enet: enetgrp {
 			fsl,pins = <
-				MX6QDL_PAD_ENET_MDIO__ENET_MDIO       0x1b0b0
-				MX6QDL_PAD_ENET_MDC__ENET_MDC         0x1b0b0
-				MX6QDL_PAD_RGMII_TXC__RGMII_TXC       0x1b0b0
-				MX6QDL_PAD_RGMII_TD0__RGMII_TD0       0x1b0b0
-				MX6QDL_PAD_RGMII_TD1__RGMII_TD1       0x1b0b0
-				MX6QDL_PAD_RGMII_TD2__RGMII_TD2       0x1b0b0
-				MX6QDL_PAD_RGMII_TD3__RGMII_TD3       0x1b0b0
-				MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL 0x1b0b0
-				MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK  0x1b0b0
-				MX6QDL_PAD_RGMII_RXC__RGMII_RXC       0x1b0b0
-				MX6QDL_PAD_RGMII_RD0__RGMII_RD0       0x1b0b0
-				MX6QDL_PAD_RGMII_RD1__RGMII_RD1       0x1b0b0
-				MX6QDL_PAD_RGMII_RD2__RGMII_RD2       0x1b0b0
-				MX6QDL_PAD_RGMII_RD3__RGMII_RD3       0x1b0b0
-				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL 0x1b0b0
+				MX6QDL_PAD_ENET_MDIO__ENET_MDIO       0x80000000
+				MX6QDL_PAD_ENET_MDC__ENET_MDC         0x80000000
+				MX6QDL_PAD_RGMII_TXC__RGMII_TXC       0x80000000
+				MX6QDL_PAD_RGMII_TD0__RGMII_TD0       0x80000000
+				MX6QDL_PAD_RGMII_TD1__RGMII_TD1       0x80000000
+				MX6QDL_PAD_RGMII_TD2__RGMII_TD2       0x80000000
+				MX6QDL_PAD_RGMII_TD3__RGMII_TD3       0x80000000
+				MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL 0x80000000
+				MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK  0x80000000
+				MX6QDL_PAD_RGMII_RXC__RGMII_RXC       0x80000000
+				MX6QDL_PAD_RGMII_RD0__RGMII_RD0       0x80000000
+				MX6QDL_PAD_RGMII_RD1__RGMII_RD1       0x80000000
+				MX6QDL_PAD_RGMII_RD2__RGMII_RD2       0x80000000
+				MX6QDL_PAD_RGMII_RD3__RGMII_RD3       0x80000000
+				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL 0x80000000
+				MX6QDL_PAD_ENET_CRS_DV__GPIO1_IO25    0x80000000
+				MX6QDL_PAD_ENET_TX_EN__GPIO1_IO28     0x1b0b0
 			>;
 		};
 	};
@@ -360,6 +402,75 @@
 				MX6QDL_PAD_GPIO_8__FLEXCAN1_RX 0x80000000
 				MX6QDL_PAD_GPIO_7__FLEXCAN1_TX 0x80000000
 			>;
+		};
+	};
+};
+
+
+&sata {
+	status = "okay";
+};
+
+&pcie {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pcie>;
+	reset-gpio = <&gpio7 12 1>;
+	status = "okay";
+	status = "okay";
+
+	pinctrl_pcie: pciegrp {
+		fsl,pins = <
+			MX6QDL_PAD_GPIO_17__GPIO7_IO12		0x030b0
+			MX6QDL_PAD_EIM_EB0__GPIO2_IO28		0x80000000
+		>;
+	};
+};
+
+&ldb {
+	status = "okay";
+
+	lvds-channel@0 {
+		crtc = "ipu1-di1";
+		fsl,data-mapping = "spwg";
+		fsl,data-width = <18>;
+		status = "okay";
+		primary;
+
+		display-timings {
+			t_lvds: t_lvds_default {
+				/* lg1280x800 values may be changed in bootscript */
+				clock-frequency = <72000000>;
+				hactive = <1280>;
+				vactive = <800>;
+				hback-porch = <48>;
+				hfront-porch = <80>;
+				vback-porch = <15>;
+				vfront-porch = <2>;
+				hsync-len = <32>;
+				vsync-len = <6>;
+			};
+		};
+	};
+
+	lvds-channel@1 {
+		crtc = "ipu1-di0";
+		fsl,data-mapping = "spwg";
+		fsl,data-width = <18>;
+		status = "okay";
+
+		display-timings {
+			t_lvds2: t_lvds2_default {
+				/* lg1280x800 values may be changed in bootscript */
+				clock-frequency = <72000000>;
+				hactive = <1280>;
+				vactive = <800>;
+				hback-porch = <48>;
+				hfront-porch = <80>;
+				vback-porch = <15>;
+				vfront-porch = <2>;
+				hsync-len = <32>;
+				vsync-len = <6>;
+			};
 		};
 	};
 };
