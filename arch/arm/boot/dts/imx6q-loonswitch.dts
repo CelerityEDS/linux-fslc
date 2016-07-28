@@ -14,7 +14,7 @@
 #include <dt-bindings/gpio/gpio.h>
 
 / {
-	model = "CelerityEDS iMX6COM Board";
+	model = "Google Loonswitch Board";
 	compatible = "fsl,imx6q";
 
 	leds {
