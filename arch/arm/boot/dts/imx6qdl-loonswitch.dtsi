@@ -19,8 +19,8 @@
 	};
 
 	aliases {
-		mmc1 = &usdhc2;
-		mmc2 = &usdhc3;
+		mmc0 = &usdhc2;
+		mmc1 = &usdhc3;
 	};
 
 	regulators {
