@@ -73,7 +73,7 @@
 
 	ina226-imx@47 {
 		compatible = "ti,ina226";
-		reg = <0x47>;
+		reg = <0x4E>;
 		shunt-resistor = <7000>;
 	};
 
