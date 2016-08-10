@@ -149,7 +149,8 @@
 			#size-cells = <2>;
 			device_type = "pci";
 			ranges = <0x81000000 0 0          0x01f80000 0 0x00010000 /* downstream I/O */
-				  0x82000000 0 0x01000000 0x01000000 0 0x00f00000>; /* non-prefetchable memory */
+				  	  0x82000000 0 0x01000000 0x01800000 0 0x00700000 /* 7MB non-prefetchable memory */
+				  	  0xC2000000 0 0x02000000 0x01000000 0 0x007FFFFF>; /* 8MB prefetchable memory */
 			num-lanes = <1>;
 			interrupts = <0 120 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "msi";

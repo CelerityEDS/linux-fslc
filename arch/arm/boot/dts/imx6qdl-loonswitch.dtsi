@@ -71,7 +71,13 @@
 		reg = <0x50>;
 	};
 
-	ina226-imx@47 {
+	ina226-wifi@4C {
+		compatible = "ti,ina226";
+		reg = <0x4C>;
+		shunt-resistor = <9000>;
+	};
+
+	ina226-imx@4E {
 		compatible = "ti,ina226";
 		reg = <0x4E>;
 		shunt-resistor = <7000>;
@@ -81,6 +87,14 @@
 		compatible = "ti,ina226";
 		reg = <0x4D>;
 		shunt-resistor = <12000>;
+	};
+
+	lm5056@40 {
+		reg = <0x40>;
+	};
+
+	pex@38 {
+		reg = <0x38>;
 	};
 
 };
@@ -415,7 +429,6 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pcie>;
 	reset-gpio = <&gpio7 12 1>;
-	status = "okay";
 	status = "okay";
 
 	pinctrl_pcie: pciegrp {
